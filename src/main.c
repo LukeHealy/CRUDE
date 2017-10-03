@@ -3,10 +3,18 @@
 
 #include "main.h"
 #include "io.h"
+#include "db_handler.h"
 
 int main(int argc, char const *argv[])
 {
-    while(show_menu() < 0);
+	int choice;
+    while((choice = show_menu()) < 0);
+
+    menu_action action = menu_action_factory(choice);
+
+    action();
+
+
 
 
     return EXIT_SUCCESS;
@@ -26,8 +34,6 @@ int show_menu(void)
     printf(">>> ");
 
     read_int_stdin(&choice);
-
-    printf("%d\n", choice);
 
     return choice > 6 ? -1 : choice;
 }
