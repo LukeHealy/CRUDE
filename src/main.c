@@ -7,15 +7,19 @@
 
 int main(int argc, char const *argv[])
 {
-	int choice;
-    while((choice = show_menu()) < 0);
+    int choice;
+    employee emp[1000];
 
-    menu_action action = menu_action_factory(choice);
+    printf("Welcome to CRUDE. ");
 
-    action();
+    while(1)
+    {
+        while((choice = show_menu()) < 0);
+        
+        menu_action action = menu_action_factory(choice);
 
-
-
+        action(emp);
+    }
 
     return EXIT_SUCCESS;
 }
@@ -23,8 +27,7 @@ int main(int argc, char const *argv[])
 int show_menu(void)
 {
     int choice = -1;
-
-    printf("Welcome to CRUDE, please select an option:\n\n");
+    printf("Please select an option:\n\n");
     printf("    1: Load Database\n");
     printf("    2: Display Employee Record\n");
     printf("    3: Add Employee\n");

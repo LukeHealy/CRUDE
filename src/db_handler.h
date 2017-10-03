@@ -1,12 +1,17 @@
 #pragma once
 
-int load_db(void);
-int display_emp_rec(void);
-int add_emp(void);
-int edit_emp(void);
-int delete_emp(void);
-int save_db(void);
+#include "employee.h"
 
-typedef int (*menu_action)(void);
+typedef int (*menu_action)(employee emp[1000]);
 
-menu_action menu_action_factory(int);
+int load_db(employee emp[1000]);
+int display_emp_rec(employee emp[1000]);
+int add_emp(employee emp[1000]);
+int edit_emp(employee emp[1000]);
+int delete_emp(employee emp[1000]);
+int save_db(employee emp[1000]);
+menu_action menu_action_factory(int choice);
+int read_csv(char* filename, employee* emp);
+employee* get_employee_by_id(employee emp[1000], int id);
+int print_employee(employee* emp);
+
