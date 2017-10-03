@@ -5,15 +5,10 @@
 
 int read_int_stdin(int* i)
 {
-    char raw_input[10];
-
-    if(fgets(raw_input, sizeof(raw_input), stdin))
+    if(scanf("%9d", i) > -1)
     {
         consume_stdin();
-        if(sscanf(raw_input, "%d", i) == 1)
-        {
-            return EXIT_SUCCESS;
-        }
+        return EXIT_SUCCESS;
     }
 
     return EXIT_FAILURE;
