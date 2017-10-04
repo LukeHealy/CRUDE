@@ -6,11 +6,12 @@
 
 int read_int_stdin(int* i)
 {
-    if(scanf("%9d", i) > -1)
+    if(scanf("%9d", i) > 0)
     {
         consume_stdin();
         return EXIT_SUCCESS;
     }
+    consume_stdin();    
 
     return EXIT_FAILURE;
 }
