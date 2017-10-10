@@ -1,7 +1,7 @@
 OBJ = main.o io.o db_handler.o
 CC = gcc
 EXEC = crude
-VULN = -fno-stack-protector -z execstack -no-pie
+VULN = -fno-stack-protector -z execstack
 CFLAGS = -Wall -g $(VULN)
 
 $(EXEC): $(OBJ)
