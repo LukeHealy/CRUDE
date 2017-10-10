@@ -16,9 +16,9 @@ This is the 2017 Curtin University Cyber Crime and Security Enhanced Programming
 
 ## Compilation
 
-Type make.
+Type ```make all```.
 
 ## Run
 
-Type ./crude
+Type ```./crude```
 
