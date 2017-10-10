@@ -17,6 +17,8 @@ int load_db(employee emp[1000])
     if(read_csv(filename, emp) == EXIT_FAILURE)
     {
         fprintf(stderr, "Invalid file detected, nothing loaded.\n");
+        memset(emp, 0, 1000 * sizeof(employee));
+
         return EXIT_FAILURE;
     }
 
@@ -76,40 +78,22 @@ int update_employee(employee* emp, int num_employees)
         return EXIT_FAILURE;
     }
 
-    if(get_detail_from_user(&emp, 3, "Enter employee's salutation:\n>>> ", 1, num_employees))
+    if(get_detail_from_user(&emp, 3, "Enter employee's salutation:\n>>> ", 1, num_employees)
+    || get_detail_from_user(&emp, 20, "Enter employee's first name:\n>>> ", 2, num_employees)
+    || get_detail_from_user(&emp, 30, "Enter employee's surname:\n>>> ", 3, num_employees)
+    || get_detail_from_user(&emp, 15, "Enter employee's position:\n>>> ", 4, num_employees)
+    || get_detail_from_user(&emp, 9, "Enter employee's salary:\n>>> ", 5, num_employees)
+    || !confirm_with_user("Are you sure you want to update this employee?"))
     {
-        goto ERR;
-    }
+        printf("Employee not saved.\n");
+        memcpy(emp, &backup, sizeof(employee));
 
-    if(get_detail_from_user(&emp, 20, "Enter employee's first name:\n>>> ", 2, num_employees))
-    {
-        goto ERR;
-    }
-
-    if(get_detail_from_user(&emp, 30, "Enter employee's surname:\n>>> ", 3, num_employees))
-    {
-        goto ERR;
-    }
-
-    if(get_detail_from_user(&emp, 15, "Enter employee's position:\n>>> ", 4, num_employees))
-    {
-        goto ERR;
-    }
-
-    if(get_detail_from_user(&emp, 9, "Enter employee's salary:\n>>> ", 5, num_employees))
-    {
-        goto ERR;
+        return EXIT_FAILURE;
     }
     
     emp->deleted = 0;
 
     return EXIT_SUCCESS;
-
-    ERR:
-        printf("Error occured, employee not saved.\n");
-        memcpy(emp, &backup, sizeof(employee));
-
-    return EXIT_FAILURE;
 }
 
 int generate_unique_id(employee emp[1000])
@@ -132,6 +116,7 @@ int add_emp(employee emp[1000])
 
     printf("New employee created with ID: %d\n", new_id);
     emp[num_emp].id = new_id;
+
     if(update_employee(&emp[num_emp], num_emp))
     {
         emp[num_emp].id = 0;
@@ -152,8 +137,8 @@ int edit_emp(employee emp[1000])
         printf("Invalid, Enter employee ID to edit:\n>>> ");
     }
 
-
     temployee = get_employee_by_id(emp, id);
+
     if(temployee != NULL)
     {
         update_employee(temployee, get_num_employees(emp));
@@ -168,14 +153,86 @@ int edit_emp(employee emp[1000])
 
 int delete_emp(employee emp[1000])
 {
-    printf("Delete Employee\n");
+    int emp_id = 0;
+    employee* temployee;
+    printf("Enter employee ID to delete:\n>>> ");
+
+    while(read_int_stdin(&emp_id) != EXIT_SUCCESS)
+    {
+        printf("Invalid, Enter employee ID to delete:\n>>> ");
+    }
+
+    if((temployee = get_employee_by_id(emp, emp_id)) != NULL)
+    {
+        printf("Deleting %s %s.\n", temployee->firstname, temployee->surname);
+        if(authenticate_user())
+        {
+            temployee->deleted = 1;
+        }
+        else
+        {
+            printf("Password incorrect, employee unchanged.\n");
+            return EXIT_FAILURE;
+        }
+    }
+    else
+    {
+        printf("No employee with ID %d.\n", emp_id);
+        return EXIT_FAILURE;
+    }
+
     return EXIT_SUCCESS;
 }
 
 int save_db(employee emp[1000])
 {
-    printf("Save Database\n");
+    char file_path[512];
+
+    printf("Enter the path to save the database file.\n>>> ");
+    while(read_string_stdin(file_path, 512) != EXIT_SUCCESS)
+    {
+        printf("Error, Re-enter the path to save the database file.\n>>> ");
+    }
+
+    if(write_db_to_file(emp, file_path) == EXIT_SUCCESS)
+    {
+        printf("Database written to file.\n");
+    }
+    else
+    {
+        printf("Error, Database not written to file.\n");
+    }
+
     return EXIT_SUCCESS;
+}
+
+int write_db_to_file(employee emp[1000], char* path)
+{
+    int i;
+    FILE* f = fopen(path, "w");
+
+    if(f == NULL)
+    {
+        perror(path);
+        return EXIT_FAILURE;
+    }
+
+    for(i = 0; i < get_num_employees(emp); i++)
+    {
+        fprintf(f, "%d,%s,%s,%s,%s,%d,%d\n", 
+            emp[i].id,
+            emp[i].salutation,
+            emp[i].firstname,
+            emp[i].surname,
+            emp[i].position,
+            emp[i].salary,
+            emp[i].deleted);
+    }
+
+    fclose(f);
+
+    return EXIT_SUCCESS;
+
 }
 
 menu_action menu_action_factory(int choice)
@@ -194,8 +251,15 @@ menu_action menu_action_factory(int choice)
             return &delete_emp;
         case 6:
             return &save_db;
+        case 7:
+            return &exit_program;
     }
     return NULL;
+}
+
+int exit_program(employee emp[1000])
+{
+    exit(EXIT_SUCCESS);
 }
 
 int print_employee(employee* emp)
@@ -258,7 +322,7 @@ int store_word(char* current_word, int curr_word_len, employee* emp, int num_mat
     switch(num_matched)
     {
         case 0:
-            if(sscanf(current_word, "%d", &(emp->id)) != 1)
+            if(sscanf(current_word, "%d", &(emp->id)) != 1 || emp->id < 0)
             {
                 printf("Invalid ID on line %d: \n", num_read);
                 return EXIT_FAILURE;
@@ -310,6 +374,41 @@ int store_word(char* current_word, int curr_word_len, employee* emp, int num_mat
             break;
     }
     return EXIT_SUCCESS;
+}
+
+int confirm_with_user(char* msg)
+{
+    printf("%s [y/N]\n>>> ", msg);
+    char verdict[2];
+
+    while(read_string_stdin(verdict, 2) != EXIT_SUCCESS)
+    {
+        printf("Please enter y or n.\n>>> ");
+    }
+
+    if(strncmp("y", verdict, 1) == 0 || strncmp("Y", verdict, 1) == 0)
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
+int authenticate_user(void)
+{
+    char password[256];
+    printf("Enter password:\n>>> ");
+    while(read_string_stdin(password, 256) != EXIT_SUCCESS)
+    {
+        printf("Error, Please Re-enter password:\n>>> ");
+    }
+
+    if(strncmp("password", password, 256) == 0)
+    {
+        return 1;
+    }
+
+    return 0;
 }
 
 int read_csv(char* filename, employee* emp)
@@ -371,7 +470,11 @@ int read_csv(char* filename, employee* emp)
             idx++;
             current_word[i] = '\0';
 
-            store_word(current_word, curr_word_len, &emp[num_read], num_matched, num_read);
+            if(store_word(current_word, curr_word_len, &emp[num_read], num_matched, num_read))
+            {
+                free(current_word);
+                return EXIT_FAILURE;
+            }
             
             free(current_word);
         }

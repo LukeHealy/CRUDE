@@ -40,9 +40,10 @@ int show_menu(void)
     printf("    4: Edit Employee\n");
     printf("    5: Delete Employee\n");
     printf("    6: Save Database\n");
+    printf("    7: Exit\n");
     printf(">>> ");
 
     read_int_stdin(&choice);
 
-    return choice > 6 ? -1 : choice;
+    return choice > 7 ? -1 : choice;
 }
