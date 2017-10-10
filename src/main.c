@@ -8,11 +8,17 @@
 int main(int argc, char const *argv[])
 {
     int choice;
+    int i;
     employee emp[1000];
+
+    for(i = 0; i < 1000; i++)
+    {
+        emp[i].id = 0;
+    }
 
     printf("Welcome to CRUDE. ");
 
-    while(1)
+    for(;;)
     {
         while((choice = show_menu()) < 0);
         

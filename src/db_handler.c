@@ -9,6 +9,8 @@ int load_db(employee emp[1000])
 {
     char filename[256];
 
+    memset(emp, 0, 1000 * sizeof(employee));
+
     printf("Enter filename of the database:\n>>> ");
     read_string_stdin(filename, 256);
 
@@ -24,6 +26,7 @@ int load_db(employee emp[1000])
 int display_emp_rec(employee emp[1000])
 {
     int emp_id = 0;
+    employee* temployee;
     printf("Enter an employee ID:\n>>> ");
 
     while(read_int_stdin(&emp_id) != EXIT_SUCCESS)
@@ -31,20 +34,135 @@ int display_emp_rec(employee emp[1000])
         printf("Invalid.\nEnter an employee ID:\n>>> ");
     }
 
-    print_employee(get_employee_by_id(emp, emp_id));
+    if((temployee = get_employee_by_id(emp, emp_id)) != NULL)
+    {
+        print_employee(temployee);
+    }
+    else
+    {
+        printf("No employee with ID %d.\n", emp_id);
+    }
 
     return EXIT_SUCCESS;
 }
 
+int get_num_employees(employee emp[1000])
+{
+    int i = 0;
+    while(emp[i].id != 0)
+    {
+        i++;
+    }
+
+    return i;
+}
+
+int get_detail_from_user(employee** emp, int word_len, char* prompt, int idx, int num_employees)
+{
+    char item[128];
+
+    printf(prompt);
+    read_string_stdin(item, word_len);
+    return store_word(item, word_len, *emp, idx, num_employees);
+}
+
+int update_employee(employee* emp, int num_employees)
+{
+    employee backup;
+    memcpy(&backup, emp, sizeof(employee));
+
+    if(emp == NULL)
+    {
+        return EXIT_FAILURE;
+    }
+
+    if(get_detail_from_user(&emp, 3, "Enter employee's salutation:\n>>> ", 1, num_employees))
+    {
+        goto ERR;
+    }
+
+    if(get_detail_from_user(&emp, 20, "Enter employee's first name:\n>>> ", 2, num_employees))
+    {
+        goto ERR;
+    }
+
+    if(get_detail_from_user(&emp, 30, "Enter employee's surname:\n>>> ", 3, num_employees))
+    {
+        goto ERR;
+    }
+
+    if(get_detail_from_user(&emp, 15, "Enter employee's position:\n>>> ", 4, num_employees))
+    {
+        goto ERR;
+    }
+
+    if(get_detail_from_user(&emp, 9, "Enter employee's salary:\n>>> ", 5, num_employees))
+    {
+        goto ERR;
+    }
+    
+    emp->deleted = 0;
+
+    return EXIT_SUCCESS;
+
+    ERR:
+        printf("Error occured, employee not saved.\n");
+        memcpy(emp, &backup, sizeof(employee));
+
+    return EXIT_FAILURE;
+}
+
+int generate_unique_id(employee emp[1000])
+{
+    int i;
+    int max_id = 0;
+
+    for(i = 0; i < 1000; i++)
+    {
+        max_id = emp[i].id > max_id ? emp[i].id : max_id;
+    }
+
+    return max_id + 1;
+}
+
 int add_emp(employee emp[1000])
 {
-    printf("Add Employee\n");
+    int new_id = generate_unique_id(emp);
+    int num_emp = get_num_employees(emp);
+
+    printf("New employee created with ID: %d\n", new_id);
+    emp[num_emp].id = new_id;
+    if(update_employee(&emp[num_emp], num_emp))
+    {
+        emp[num_emp].id = 0;
+        return EXIT_FAILURE;
+    }
+
     return EXIT_SUCCESS;
 }
 
 int edit_emp(employee emp[1000])
 {
-    printf("Edit Employee\n");
+    int id = 0;
+    employee* temployee;
+    printf("Enter employee ID to edit:\n>>> ");
+
+    while(read_int_stdin(&id) != EXIT_SUCCESS)
+    {
+        printf("Invalid, Enter employee ID to edit:\n>>> ");
+    }
+
+
+    temployee = get_employee_by_id(emp, id);
+    if(temployee != NULL)
+    {
+        update_employee(temployee, get_num_employees(emp));
+    }
+    else
+    {
+        printf("No employee with ID %d.\n", id);
+    }
+
     return EXIT_SUCCESS;
 }
 
@@ -82,14 +200,17 @@ menu_action menu_action_factory(int choice)
 
 int print_employee(employee* emp)
 {
-    printf("Employee %d: %s %s %s, %s. Salary: $%d. Deleted: %d\n",
-        emp->id,
-        emp->salutation,
-        emp->firstname,
-        emp->surname,
-        emp->position,
-        emp->salary,
-        emp->deleted);
+    if(emp != NULL)
+    {
+        printf("Employee %d: %s %s %s, %s. Salary: $%d. Deleted: %d\n",
+            emp->id,
+            emp->salutation,
+            emp->firstname,
+            emp->surname,
+            emp->position,
+            emp->salary,
+            emp->deleted);
+    }
 
     return EXIT_SUCCESS;
 }
@@ -97,11 +218,17 @@ int print_employee(employee* emp)
 employee* get_employee_by_id(employee emp[1000], int id)
 {
     int i = 0;
-    while(emp[i].id != id && i < 1000)
+
+    while(i < 1000)
     {
-        i ++;
+        if(emp[i].id == id)
+        {
+            return &emp[i];
+        }
+        i++;
     }
-    return &emp[i];
+
+    return NULL;
 }
 
 int get_word_len(int num)
@@ -131,7 +258,7 @@ int store_word(char* current_word, int curr_word_len, employee* emp, int num_mat
     switch(num_matched)
     {
         case 0:
-            if(sscanf(current_word, "%d", &emp[num_read].id) != 1)
+            if(sscanf(current_word, "%d", &(emp->id)) != 1)
             {
                 printf("Invalid ID on line %d: \n", num_read);
                 return EXIT_FAILURE;
@@ -144,7 +271,7 @@ int store_word(char* current_word, int curr_word_len, employee* emp, int num_mat
                 strncmp(current_word, "Sir", curr_word_len) == 0 ||
                 strncmp(current_word, "Mdm", curr_word_len) == 0)
             {
-                strncpy(emp[num_read].salutation, current_word, curr_word_len);
+                strncpy(emp->salutation, current_word, curr_word_len);
             }
             else
             {
@@ -154,28 +281,28 @@ int store_word(char* current_word, int curr_word_len, employee* emp, int num_mat
 
             break;
         case 2:
-            strncpy(emp[num_read].firstname, current_word, curr_word_len + 1);
+            strncpy(emp->firstname, current_word, curr_word_len + 1);
             break;
         case 3:
-            strncpy(emp[num_read].surname, current_word, curr_word_len + 1);
+            strncpy(emp->surname, current_word, curr_word_len + 1);
             break;
         case 4:
-            strncpy(emp[num_read].position, current_word, curr_word_len + 1);
+            strncpy(emp->position, current_word, curr_word_len + 1);
             break;
         case 5:
-            if(sscanf(current_word, "%d", &emp[num_read].salary) != 1)
+            if(sscanf(current_word, "%d", &(emp->salary)) != 1 || emp->salary <= 0)
             {
                 printf("Invalid Salary on line %d: \n", num_read);
                 return EXIT_FAILURE;
             }
             break;
         case 6:
-            if(sscanf(current_word, "%d", &emp[num_read].deleted) != 1)
+            if(sscanf(current_word, "%d", &(emp->deleted)) != 1)
             {
                 printf("Invalid Deleted on line %d: \n", num_read);
                 return EXIT_FAILURE;
             }
-            if(emp[num_read].deleted != 1 && emp[num_read].deleted != 0)
+            if(emp->deleted != 1 && emp->deleted != 0)
             {
                 printf("Invalid Deleted on line %d: \n", num_read);
                 return EXIT_FAILURE;
@@ -244,7 +371,7 @@ int read_csv(char* filename, employee* emp)
             idx++;
             current_word[i] = '\0';
 
-            store_word(current_word, curr_word_len, emp, num_matched, num_read);
+            store_word(current_word, curr_word_len, &emp[num_read], num_matched, num_read);
             
             free(current_word);
         }

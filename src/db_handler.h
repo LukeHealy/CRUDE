@@ -16,3 +16,6 @@ employee* get_employee_by_id(employee emp[1000], int id);
 int print_employee(employee* emp);
 int get_word_len(int num);
 int store_word(char* current_word, int curr_word_len, employee* emp, int num_matched, int num_read);
+int generate_unique_id(employee emp[1000]);
+int update_employee(employee* emp, int num_employees);
+int get_detail_from_user(employee** emp, int word_len, char* prompt, int idx, int num_employees);
