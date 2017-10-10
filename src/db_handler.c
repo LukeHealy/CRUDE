@@ -63,7 +63,7 @@ int get_detail_from_user(employee** emp, int word_len, char* prompt, int idx, in
 {
     char item[128];
 
-    printf(prompt);
+    printf("%s\n", prompt);
     read_string_stdin(item, word_len);
     return store_word(item, word_len, *emp, idx, num_employees);
 }
