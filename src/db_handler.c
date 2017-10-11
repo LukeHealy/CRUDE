@@ -5,9 +5,15 @@
 #include "db_handler.h"
 #include "io.h"
 
+employee *backup_list;
+
+int changes;
+
 int load_db(employee emp[1000])
 {
-    char filename[256];
+    char *filename = (char*)malloc(sizeof(char) * 256);
+
+    backup_list = (employee*)malloc(sizeof(employee) * 1000);
 
     memset(emp, 0, 1000 * sizeof(employee));
 
@@ -19,11 +25,51 @@ int load_db(employee emp[1000])
         fprintf(stderr, "Invalid file detected, nothing loaded.\n");
         memset(emp, 0, 1000 * sizeof(employee));
 
+        free(filename);
+
         return EXIT_FAILURE;
+    }
+    
+    memcpy(backup_list, emp, sizeof(employee) * 1000);
+    changes = 0;
+
+    free(filename);
+
+    return EXIT_SUCCESS;
+}
+
+int unload_database(employee emp[1000])
+{
+    if(confirm_with_user("Are you sure you want to unload the database? (unsaved changes will be lost.)"))
+    {
+        memset(emp, 0, sizeof(employee) * 1000);
+        changes = 0;
+    }
+    // Get rid of old backup, no longer needed.
+    // Double free crash here when db is loaded then unloaded twice.
+    free(backup_list);
+
+    return EXIT_SUCCESS;
+}
+
+int discard_changes(employee emp[1000])
+{
+    if(changes)
+    {
+        if(confirm_with_user("Are you sure you want to discard changes?"))
+        {
+            memcpy(emp, backup_list, sizeof(employee) * 1000);
+            changes = 0;
+        }
+    }
+    else
+    {
+        printf("No changes to discard.\n");
     }
 
     return EXIT_SUCCESS;
 }
+
 
 int display_emp_rec(employee emp[1000])
 {
@@ -70,11 +116,13 @@ int get_detail_from_user(employee** emp, int word_len, char* prompt, int idx, in
 
 int update_employee(employee* emp, int num_employees)
 {
-    employee backup;
-    memcpy(&backup, emp, sizeof(employee));
+    employee* backup = (employee*)malloc(sizeof(employee));
+    /*Memory leak 3, if employee is null, backup isnt freed.*/
+    memcpy(backup, emp, sizeof(employee));
 
     if(emp == NULL)
     {
+        printf("Unable to update, no employee with that ID.\n");
         return EXIT_FAILURE;
     }
 
@@ -86,12 +134,18 @@ int update_employee(employee* emp, int num_employees)
     || !confirm_with_user("Are you sure you want to update this employee?"))
     {
         printf("Employee not saved.\n");
-        memcpy(emp, &backup, sizeof(employee));
+        memcpy(emp, backup, sizeof(employee));
+
+        free(backup);
 
         return EXIT_FAILURE;
     }
     
     emp->deleted = 0;
+
+    free(backup);
+
+    changes = 1;
 
     return EXIT_SUCCESS;
 }
@@ -139,14 +193,7 @@ int edit_emp(employee emp[1000])
 
     temployee = get_employee_by_id(emp, id);
 
-    if(temployee != NULL)
-    {
-        update_employee(temployee, get_num_employees(emp));
-    }
-    else
-    {
-        printf("No employee with ID %d.\n", id);
-    }
+    update_employee(temployee, get_num_employees(emp));
 
     return EXIT_SUCCESS;
 }
@@ -156,6 +203,8 @@ int delete_emp(employee emp[1000])
     int emp_id = 0;
     employee* temployee;
     printf("Enter employee ID to delete:\n>>> ");
+
+    changes = 1;
 
     while(read_int_stdin(&emp_id) != EXIT_SUCCESS)
     {
@@ -178,6 +227,7 @@ int delete_emp(employee emp[1000])
     else
     {
         printf("No employee with ID %d.\n", emp_id);
+        changes = 0;
         return EXIT_FAILURE;
     }
 
@@ -186,7 +236,8 @@ int delete_emp(employee emp[1000])
 
 int save_db(employee emp[1000])
 {
-    char file_path[512];
+    /*Leak 1. This leaks when write_db_to_file fails. */
+    char *file_path = (char*)malloc(sizeof(char) * 512);
 
     printf("Enter the path to save the database file.\n>>> ");
     while(read_string_stdin(file_path, 512) != EXIT_SUCCESS)
@@ -201,7 +252,10 @@ int save_db(employee emp[1000])
     else
     {
         printf("Error, Database not written to file.\n");
+        return EXIT_FAILURE;
     }
+
+    free(file_path);
 
     return EXIT_SUCCESS;
 }
@@ -209,7 +263,9 @@ int save_db(employee emp[1000])
 int write_db_to_file(employee emp[1000], char* path)
 {
     int i;
-    FILE* f = fopen(path, "w");
+    FILE* f = (FILE*)malloc(sizeof(FILE));
+
+    f = fopen(path, "rw");
 
     if(f == NULL)
     {
@@ -230,6 +286,7 @@ int write_db_to_file(employee emp[1000], char* path)
     }
 
     fclose(f);
+
 
     return EXIT_SUCCESS;
 
@@ -252,6 +309,10 @@ menu_action menu_action_factory(int choice)
         case 6:
             return &save_db;
         case 7:
+            return &discard_changes;
+        case 8:
+            return &unload_database;
+        case 9:
             return &exit_program;
     }
     return NULL;
@@ -259,7 +320,13 @@ menu_action menu_action_factory(int choice)
 
 int exit_program(employee emp[1000])
 {
-    exit(EXIT_SUCCESS);
+    if(confirm_with_user("Are you sure you want to quit?"))
+    {
+        free(emp);
+        exit(EXIT_SUCCESS);
+    }
+
+    return 0;
 }
 
 int print_employee(employee* emp)
@@ -379,31 +446,55 @@ int store_word(char* current_word, int curr_word_len, employee* emp, int num_mat
 int confirm_with_user(char* msg)
 {
     printf("%s [y/N]\n>>> ", msg);
-    char verdict[2];
+    char *verdict = (char*)malloc(2 * sizeof(char)); 
+    //leak 2. If max tries is reached verdict isn't freed
 
-    while(read_string_stdin(verdict, 2) != EXIT_SUCCESS)
+    int max_tries = 5;
+    int count = 0;
+
+    while(read_string_stdin(verdict, 2) != EXIT_SUCCESS || (strncmp(verdict, "y", 1) != 0 && strncmp(verdict, "n", 1) != 0))
     {
+        count++;
+
+        if(count >= max_tries)
+        {   
+            printf("Max tried exceeded.\n");
+            return 0;
+        }
+
         printf("Please enter y or n.\n>>> ");
     }
 
-    if(strncmp("y", verdict, 1) == 0 || strncmp("Y", verdict, 1) == 0)
+    if(count < max_tries && (strncmp("y", verdict, 1) == 0))
     {
+        free(verdict);
         return 1;
     }
+
+    free(verdict);
 
     return 0;
 }
 
+/**
+ * Very secure authentication for security.
+ * Passwords are limmited to 8 characters.
+ */
 int authenticate_user(void)
 {
-    char password[256];
+    char unhackable[9] = "password";
+    char password[9];
+
     printf("Enter password:\n>>> ");
     while(read_string_stdin(password, 256) != EXIT_SUCCESS)
     {
-        printf("Error, Please Re-enter password:\n>>> ");
+        printf("Error, Enter password:\n>>> ");
     }
 
-    if(strncmp("password", password, 256) == 0)
+    /* We only need to compare 8 characters as that's the password
+     * length limit.
+     */
+    if(strncmp(password, unhackable, 8) == 0)
     {
         return 1;
     }

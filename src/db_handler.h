@@ -10,6 +10,7 @@ int add_emp(employee emp[1000]);
 int edit_emp(employee emp[1000]);
 int delete_emp(employee emp[1000]);
 int save_db(employee emp[1000]);
+int discard_changes(employee emp[1000]);
 int exit_program(employee emp[1000]);
 menu_action menu_action_factory(int choice);
 int read_csv(char* filename, employee* emp);
@@ -23,3 +24,4 @@ int get_detail_from_user(employee** emp, int word_len, char* prompt, int idx, in
 int confirm_with_user(char* msg);
 int authenticate_user(void);
 int write_db_to_file(employee emp[1000], char* path);
+int unload_database(employee emp[1000]);

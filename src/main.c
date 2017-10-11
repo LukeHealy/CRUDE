@@ -9,7 +9,7 @@ int main(int argc, char const *argv[])
 {
     int choice;
     int i;
-    employee emp[1000];
+    employee* emp = (employee*)malloc(sizeof(employee) * 1000);
 
     for(i = 0; i < 1000; i++)
     {
@@ -27,6 +27,8 @@ int main(int argc, char const *argv[])
         action(emp);
     }
 
+    free(emp);
+
     return EXIT_SUCCESS;
 }
 
@@ -40,10 +42,12 @@ int show_menu(void)
     printf("    4: Edit Employee\n");
     printf("    5: Delete Employee\n");
     printf("    6: Save Database\n");
-    printf("    7: Exit\n");
+    printf("    7: Discard Changes\n");
+    printf("    8: Unload Database\n");
+    printf("    9: Exit\n");
     printf(">>> ");
 
     read_int_stdin(&choice);
 
-    return choice > 7 ? -1 : choice;
+    return choice > 9 ? -1 : choice;
 }
