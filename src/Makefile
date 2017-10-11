@@ -5,7 +5,7 @@ VULN = -fno-stack-protector -z execstack
 CFLAGS = -Wall -g $(VULN)
 
 $(EXEC): $(OBJ)
-	$(CC) $(OBJ) -o $(EXEC)
+	$(CC) $(OBJ) -o $(EXEC) $(VULN)
 	mv $(EXEC) ..
 
 main.o: main.c main.h io.h db_handler.h employee.h
