@@ -3,6 +3,8 @@
 #include "employee.h"
 
 typedef int (*menu_action)(employee emp[1000]);
+typedef int (*print_func)(employee  emp[1000], char*);
+
 
 int load_db(employee emp[1000]);
 int display_emp_rec(employee emp[1000]);
@@ -25,3 +27,4 @@ int confirm_with_user(char* msg);
 int authenticate_user(void);
 int write_db_to_file(employee emp[1000], char* path);
 int unload_database(employee emp[1000]);
+int write_db_to_screen(employee emp[1000], char* path);

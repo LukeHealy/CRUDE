@@ -46,7 +46,7 @@ int unload_database(employee emp[1000])
         changes = 0;
     }
     // Get rid of old backup, no longer needed.
-    // Double free crash here when db is loaded then unloaded twice.
+    // Double free crash: here when db is loaded then unloaded twice.
     free(backup_list);
 
     return EXIT_SUCCESS;
@@ -107,7 +107,7 @@ int get_num_employees(employee emp[1000])
 
 int get_detail_from_user(employee** emp, int word_len, char* prompt, int idx, int num_employees)
 {
-    char item[128];
+    char item[1024];
 
     printf("%s\n", prompt);
     read_string_stdin(item, word_len);
@@ -125,11 +125,12 @@ int update_employee(employee* emp, int num_employees)
         printf("Unable to update, no employee with that ID.\n");
         return EXIT_FAILURE;
     }
-
+    // Heap overflow corruption: position has a typo allowing 150 characters instead of 15. this corrupts
+    // the salary and the next employee id generated.
     if(get_detail_from_user(&emp, 3, "Enter employee's salutation:\n>>> ", 1, num_employees)
     || get_detail_from_user(&emp, 20, "Enter employee's first name:\n>>> ", 2, num_employees)
     || get_detail_from_user(&emp, 30, "Enter employee's surname:\n>>> ", 3, num_employees)
-    || get_detail_from_user(&emp, 15, "Enter employee's position:\n>>> ", 4, num_employees)
+    || get_detail_from_user(&emp, 150, "Enter employee's position:\n>>> ", 4, num_employees)
     || get_detail_from_user(&emp, 9, "Enter employee's salary:\n>>> ", 5, num_employees)
     || !confirm_with_user("Are you sure you want to update this employee?"))
     {
@@ -237,17 +238,39 @@ int delete_emp(employee emp[1000])
 int save_db(employee emp[1000])
 {
     /*Leak 1. This leaks when write_db_to_file fails. */
-    char *file_path = (char*)malloc(sizeof(char) * 512);
 
-    printf("Enter the path to save the database file.\n>>> ");
-    while(read_string_stdin(file_path, 512) != EXIT_SUCCESS)
-    {
-        printf("Error, Re-enter the path to save the database file.\n>>> ");
+    char *file_path = (char*)malloc(16);
+    print_func* func = (print_func*)malloc(16);
+
+    int choice = 0;
+
+    printf("Print database.\n");
+    printf("1: To a file.\n");
+    printf("2: To the screen.\n>>> ");
+
+    read_int_stdin(&choice);    
+
+    while(choice != 1 && choice != 2)
+    {   
+        printf("Error, enter 1 or 2.\n>>> ");
+        read_int_stdin(&choice);
     }
 
-    if(write_db_to_file(emp, file_path) == EXIT_SUCCESS)
+    if(choice == 2)
     {
-        printf("Database written to file.\n");
+        *func = &write_db_to_screen;
+    }
+    else if(choice == 1)
+    {
+        // Heap overflow 1:
+        *func = &write_db_to_file;
+        printf("Enter the path to save the database file.\n>>> ");
+        scanf("%s", file_path);
+    }
+
+    if((*func)(emp, file_path) == EXIT_SUCCESS)
+    {
+        printf("Action successful.\n");
     }
     else
     {
@@ -260,12 +283,23 @@ int save_db(employee emp[1000])
     return EXIT_SUCCESS;
 }
 
+int write_db_to_screen(employee emp[1000], char* path)
+{
+    int i;
+    for(i = 0; i < get_num_employees(emp); i++)
+    {
+        print_employee(&emp[i]);
+    }
+
+    return EXIT_SUCCESS;
+}
+
 int write_db_to_file(employee emp[1000], char* path)
 {
     int i;
     FILE* f = (FILE*)malloc(sizeof(FILE));
 
-    f = fopen(path, "rw");
+    f = fopen(path, "w");
 
     if(f == NULL)
     {
@@ -486,10 +520,9 @@ int authenticate_user(void)
     char password[9];
 
     printf("Enter password:\n>>> ");
-    while(read_string_stdin(password, 256) != EXIT_SUCCESS)
-    {
-        printf("Error, Enter password:\n>>> ");
-    }
+    // Stack smash 1: This is a stack based buffer overflow resulting in code exec/crash.
+    // can also bypass password auth.
+    scanf("%s", password);
 
     /* We only need to compare 8 characters as that's the password
      * length limit.

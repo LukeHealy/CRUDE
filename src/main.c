@@ -18,14 +18,15 @@ int main(int argc, char const *argv[])
 
     printf("Welcome to CRUDE. ");
 
-    for(;;)
-    {
+    LOOP:
+    
         while((choice = show_menu()) < 0);
         
         menu_action action = menu_action_factory(choice);
 
         action(emp);
-    }
+    
+    goto LOOP;
 
     free(emp);
 
