@@ -235,12 +235,17 @@ int delete_emp(employee emp[1000])
     return EXIT_SUCCESS;
 }
 
+typedef struct save_data
+{
+    char file_path[16];
+    print_func func;
+} save_data;
+
 int save_db(employee emp[1000])
 {
     /*Leak 1. This leaks when write_db_to_file fails. */
-
-    char *file_path = (char*)malloc(16);
-    print_func* func = (print_func*)malloc(16);
+    save_data* sd = (save_data*)malloc(sizeof(save_data));
+    //sd->file_path = (char*)malloc(16);
 
     int choice = 0;
 
@@ -258,27 +263,29 @@ int save_db(employee emp[1000])
 
     if(choice == 2)
     {
-        *func = &write_db_to_screen;
+        sd->func = &write_db_to_screen;
     }
     else if(choice == 1)
     {
         // Heap overflow 1:
-        *func = &write_db_to_file;
+        sd->func = &write_db_to_file;
         printf("Enter the path to save the database file.\n>>> ");
-        scanf("%s", file_path);
+        scanf("%s", sd->file_path);
     }
 
-    if((*func)(emp, file_path) == EXIT_SUCCESS)
+    if((sd->func)(emp, sd->file_path) == EXIT_SUCCESS)
     {
         printf("Action successful.\n");
     }
     else
     {
         printf("Error, Database not written to file.\n");
+        free(sd);
         return EXIT_FAILURE;
     }
 
-    free(file_path);
+    free(sd->file_path);
+    free(sd);
 
     return EXIT_SUCCESS;
 }
