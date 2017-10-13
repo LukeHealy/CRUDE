@@ -2,11 +2,10 @@
 
 #include "employee.h"
 
-
 typedef int (*menu_action)(employee emp[1000]);
-typedef int (*print_func)(employee  emp[1000], char*);
 
 int load_db(employee emp[1000]);
+int change_password(employee emp[1000]);
 int display_emp_rec(employee emp[1000]);
 int add_emp(employee emp[1000]);
 int edit_emp(employee emp[1000]);

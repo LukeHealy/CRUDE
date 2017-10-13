@@ -4,6 +4,9 @@
 
 #include "io.h"
 
+/**
+ * Reads a 9 digit or less int from the user.
+ */
 int read_int_stdin(int* i)
 {
     if(scanf("%9d", i) > 0)
@@ -16,6 +19,9 @@ int read_int_stdin(int* i)
     return EXIT_FAILURE;
 }
 
+/**
+ * Safely reads a string from stdin, up to 1023 chars.
+ */
 int read_string_stdin(char* buffer, int len)
 {
     char pre_buffer[1024];
@@ -37,6 +43,9 @@ int read_string_stdin(char* buffer, int len)
     return EXIT_FAILURE;
 }
 
+/**
+ * Consumes stdin.
+ */
 void consume_stdin(void)
 {
     char c;

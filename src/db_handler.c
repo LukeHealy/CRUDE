@@ -4,16 +4,28 @@
 
 #include "db_handler.h"
 #include "io.h"
+#include "password.h"
 
+/**
+ * Backup list of employees to implement revert changes
+ * functionality..
+ */
 employee *backup_list;
 
+/**
+ * Flags to keep track of whether a change has occured, and if the
+ * database has been loaded or not.
+ */
 int changes;
 int db_loaded;
 
+/**
+ * Loads the database from a csv file.
+ * Also records whether the database has been laoded or not.
+ */
 int load_db(employee emp[1000])
 {
     char *filename = (char*)malloc(sizeof(char) * 256);
-
     backup_list = (employee*)malloc(sizeof(employee) * 1000);
 
     memset(emp, 0, 1000 * sizeof(employee));
@@ -32,6 +44,8 @@ int load_db(employee emp[1000])
     }
     
     memcpy(backup_list, emp, sizeof(employee) * 1000);
+    // Set changes to 0 as it's fresh from the file, and loaded_db
+    // to 1.
     changes = 0;
     db_loaded = 1;
 
@@ -40,6 +54,9 @@ int load_db(employee emp[1000])
     return EXIT_SUCCESS;
 }
 
+/**
+ * Removes the database from memory.
+ */
 int unload_database(employee emp[1000])
 {
     if(confirm_with_user("Are you sure you want to unload the database? (unsaved changes will be lost.)"))
@@ -49,12 +66,15 @@ int unload_database(employee emp[1000])
         db_loaded = 0;
     }
     // Get rid of old backup, no longer needed.
-    // Double free crash: here when db is loaded then unloaded twice.
     free(backup_list);
 
     return EXIT_SUCCESS;
 }
 
+/**
+ * If changes are present and the database has been loaded,
+ * this function will revert the database back to it's saved state.
+ */
 int discard_changes(employee emp[1000])
 {
     char discard[2];
@@ -62,10 +82,12 @@ int discard_changes(employee emp[1000])
 
     if(changes && db_loaded)
     {
-        printf("Are you sure you want to discard changes?\n>>> ");
-        // stack overflow here
+        printf("Are you sure you want to discard changes? [yes/no]\n>>> ");
+
+        // Read in "yes" from the user.
         scanf("%4s", discard);
 
+        //If the user entered "yes", checking "y" will be enough.
         if(strncmp(discard, "yes", 1) == 0)
         {
             changes = 0;
@@ -83,18 +105,23 @@ int discard_changes(employee emp[1000])
     return EXIT_SUCCESS;
 }
 
-
+/**
+ * Prints out an employee's information, according to the 
+ * provided ID.
+ */
 int display_emp_rec(employee emp[1000])
 {
     int emp_id = 0;
     employee* temployee;
     printf("Enter an employee ID:\n>>> ");
 
+    // Get the id.
     while(read_int_stdin(&emp_id) != EXIT_SUCCESS)
     {
         printf("Invalid.\nEnter an employee ID:\n>>> ");
     }
 
+    // Query the id.
     if((temployee = get_employee_by_id(emp, emp_id)) != NULL)
     {
         print_employee(temployee);
@@ -107,8 +134,12 @@ int display_emp_rec(employee emp[1000])
     return EXIT_SUCCESS;
 }
 
+/**
+ * Returns the number of employees in the database.
+ */
 int get_num_employees(employee emp[1000])
 {
+    // Iterate over the array until a default id of 0 is reached.
     int i = 0;
     while(emp[i].id != 0)
     {
@@ -118,6 +149,10 @@ int get_num_employees(employee emp[1000])
     return i;
 }
 
+/**
+ * Safely gets an employee detail from the user, then passes it to 
+ * store_word to put it into the employee.
+ */
 int get_detail_from_user(employee** emp, int word_len, char* prompt, int idx, int num_employees)
 {
     char item[1024];
@@ -127,19 +162,23 @@ int get_detail_from_user(employee** emp, int word_len, char* prompt, int idx, in
     return store_word(item, word_len, *emp, idx, num_employees);
 }
 
+/**
+ * Used to change an employee's information, with the exception
+ * of the deleted field.
+ */
 int update_employee(employee* emp, int num_employees)
 {
     employee* backup = (employee*)malloc(sizeof(employee));
-    /*Memory leak 3, if employee is null, backup isnt freed.*/
     memcpy(backup, emp, sizeof(employee));
 
+    // Exit if the employee is NULL.
     if(emp == NULL)
     {
         printf("Unable to update, no employee with that ID.\n");
         return EXIT_FAILURE;
     }
-    // Heap overflow corruption: position has a typo allowing 150 characters instead of 15. this corrupts
-    // the salary and the next employee id generated.
+
+    // Read in the details from the user.
     if(get_detail_from_user(&emp, 3, "Enter employee's salutation:\n>>> ", 1, num_employees)
     || get_detail_from_user(&emp, 20, "Enter employee's first name:\n>>> ", 2, num_employees)
     || get_detail_from_user(&emp, 30, "Enter employee's surname:\n>>> ", 3, num_employees)
@@ -155,15 +194,18 @@ int update_employee(employee* emp, int num_employees)
         return EXIT_FAILURE;
     }
     
+    // Set deleted to default of 0.
     emp->deleted = 0;
+    changes = 1;
 
     free(backup);
-
-    changes = 1;
 
     return EXIT_SUCCESS;
 }
 
+/**
+ * Get's the highest id in the database and returns it, plus 1.
+ */
 int generate_unique_id(employee emp[1000])
 {
     int i;
@@ -177,14 +219,20 @@ int generate_unique_id(employee emp[1000])
     return max_id + 1;
 }
 
+/**
+ * Adds a new employee to the database. Generates an ID and 
+ * calls update on that new employee.
+ */
 int add_emp(employee emp[1000])
 {
+    // Create new employee.
     int new_id = generate_unique_id(emp);
     int num_emp = get_num_employees(emp);
 
     printf("New employee created with ID: %d\n", new_id);
     emp[num_emp].id = new_id;
 
+    // Get information for it.
     if(update_employee(&emp[num_emp], num_emp))
     {
         emp[num_emp].id = 0;
@@ -194,12 +242,17 @@ int add_emp(employee emp[1000])
     return EXIT_SUCCESS;
 }
 
+/**
+ * Edits an employee using update_employee.
+ * employee is given by the ID entered.
+ */
 int edit_emp(employee emp[1000])
 {
     int id = 0;
     employee* temployee;
     printf("Enter employee ID to edit:\n>>> ");
 
+    // Get the employee Id to edit.
     while(read_int_stdin(&id) != EXIT_SUCCESS)
     {
         printf("Invalid, Enter employee ID to edit:\n>>> ");
@@ -207,11 +260,16 @@ int edit_emp(employee emp[1000])
 
     temployee = get_employee_by_id(emp, id);
 
+    // Edit it.
     update_employee(temployee, get_num_employees(emp));
 
     return EXIT_SUCCESS;
 }
 
+/**
+ * Changes an employee's deleted flag to 1.
+ * Employee is given by the entered ID. 
+ */
 int delete_emp(employee emp[1000])
 {
     int emp_id = 0;
@@ -220,6 +278,7 @@ int delete_emp(employee emp[1000])
 
     changes = 1;
 
+    // Get the id.
     while(read_int_stdin(&emp_id) != EXIT_SUCCESS)
     {
         printf("Invalid, Enter employee ID to delete:\n>>> ");
@@ -228,6 +287,7 @@ int delete_emp(employee emp[1000])
     if((temployee = get_employee_by_id(emp, emp_id)) != NULL)
     {
         printf("Deleting %s %s.\n", temployee->firstname, temployee->surname);
+        // Get password from the user.
         if(authenticate_user())
         {
             temployee->deleted = 1;
@@ -248,15 +308,14 @@ int delete_emp(employee emp[1000])
     return EXIT_SUCCESS;
 }
 
-typedef struct save_data
-{
-    char file_path[16];
-    print_func func;
-} save_data;
-
+/**
+ * Saves the database. It can either write to a file,
+ * or dump to the screen. This is so that the database 
+ * can be passed to another process through a pipe, without
+ * having to save it to the disk.
+ */
 int save_db(employee emp[1000])
 {
-    /*Leak 1. This leaks when write_db_to_file fails. */
     save_data* sd = (save_data*)malloc(sizeof(save_data));
 
     int choice = 0;
@@ -265,21 +324,21 @@ int save_db(employee emp[1000])
     printf("1: To a file.\n");
     printf("2: To the screen.\n>>> ");
 
+    // Get the choice from the user.
     read_int_stdin(&choice);    
-
     while(choice != 1 && choice != 2)
     {   
         printf("Error, enter 1 or 2.\n>>> ");
         read_int_stdin(&choice);
     }
 
+    // Set the action according to the users choice.
     if(choice == 2)
     {
         sd->func = &write_db_to_screen;
     }
     else if(choice == 1)
     {
-        // Heap overflow 1:
         sd->func = &write_db_to_file;
         printf("Enter the path to save the database file.\n>>> ");
         scanf("%s", sd->file_path);
@@ -292,19 +351,21 @@ int save_db(employee emp[1000])
     else
     {
         printf("Error, Database not written to file.\n");
-        free(sd);
         return EXIT_FAILURE;
     }
 
-    free(sd->file_path);
     free(sd);
 
     return EXIT_SUCCESS;
 }
 
+/**
+ * Prints the databse to the screen.
+ */
 int write_db_to_screen(employee emp[1000], char* path)
 {
     int i;
+    // Print all the employees.
     for(i = 0; i < get_num_employees(emp); i++)
     {
         print_employee(&emp[i]);
@@ -313,6 +374,10 @@ int write_db_to_screen(employee emp[1000], char* path)
     return EXIT_SUCCESS;
 }
 
+/**
+ * Saves the database to the disk. The filename is provided
+ * by the user.
+ */
 int write_db_to_file(employee emp[1000], char* path)
 {
     int i;
@@ -326,6 +391,7 @@ int write_db_to_file(employee emp[1000], char* path)
         return EXIT_FAILURE;
     }
 
+    // Prints in the same csv format as read in.
     for(i = 0; i < get_num_employees(emp); i++)
     {
         fprintf(f, "%d,%s,%s,%s,%s,%d,%d\n", 
@@ -340,15 +406,50 @@ int write_db_to_file(employee emp[1000], char* path)
 
     fclose(f);
 
-
     return EXIT_SUCCESS;
-
 }
 
+/**
+ * Used to change the users password. This is temporary,
+ * so that someone else can use the delete function without people
+ * having to share passwords.
+ */
+int change_password(employee emp[1000])
+{
+    // Get the user to authenticate.
+    if(authenticate_user())
+    {
+        // Remove the old vault as we're replacing it.
+        free(vault);
+        // Make a new one.
+        password* new_vault = (password*)malloc(sizeof(password));
+        // Get the new password.
+        char new_password[9];
+        printf("Enter new password: (will be truncated to 8 characters.)\n>>> ");
+        read_string_stdin(new_password, 9);
+        strncpy(new_vault->pass, new_password, 9);
+        // Notify user of change.
+        printf("Password changed from \"%s\" to \"%s\"\n", vault->pass, new_password);
+        vault = new_vault;
+    }
+    else
+    {
+        printf("Incorrect, password unchanged.\n");
+    }
+
+    return EXIT_SUCCESS;
+}
+
+/**
+ * Returns the function based on the number entered
+ * by the user.
+ */
 menu_action menu_action_factory(int choice)
 {
     switch(choice)
     {
+        case 0:
+            return &change_password;
         case 1:
             return &load_db;
         case 2:
@@ -371,17 +472,32 @@ menu_action menu_action_factory(int choice)
     return NULL;
 }
 
+/**
+ * Asks the user to enter "quit" and if they do, the program ends.
+ */
 int exit_program(employee emp[1000])
 {
-    if(confirm_with_user("Are you sure you want to quit?"))
+    // Ask the user to enter "quit" and read it in.
+    char* quit = (char*)malloc(sizeof(char) * 4);
+    printf("Type \"quit\" to quit.\n>>> ");
+    scanf("%s", quit);
+
+    if(strncmp(quit, "quit", 4) == 0)
     {
         free(emp);
+        free(vault);
+        free(quit);
         exit(EXIT_SUCCESS);
     }
+
+    free(quit);
 
     return 0;
 }
 
+/**
+ * Prints an employee.
+ */
 int print_employee(employee* emp)
 {
     if(emp != NULL)
@@ -399,6 +515,9 @@ int print_employee(employee* emp)
     return EXIT_SUCCESS;
 }
 
+/**
+ * Returns an employee according to the supplies ID.
+ */
 employee* get_employee_by_id(employee emp[1000], int id)
 {
     int i = 0;
@@ -415,6 +534,10 @@ employee* get_employee_by_id(employee emp[1000], int id)
     return NULL;
 }
 
+/**
+ * Returns the required word length for a given input field
+ * in an employee.
+ */
 int get_word_len(int num)
 {
     switch(num)
@@ -437,11 +560,16 @@ int get_word_len(int num)
     return 0;
 }
 
+/**
+ * Takes a word and parses it, then validates it and puts it in the
+ * employee struct.
+ */
 int store_word(char* current_word, int curr_word_len, employee* emp, int num_matched, int num_read)
 {
     switch(num_matched)
     {
         case 0:
+            // Read an integer for the id. Must be 1 or more.
             if(sscanf(current_word, "%d", &(emp->id)) != 1 || emp->id < 0)
             {
                 printf("Invalid ID on line %d: \n", num_read);
@@ -449,6 +577,7 @@ int store_word(char* current_word, int curr_word_len, employee* emp, int num_mat
             }
             break;
         case 1:
+            // Ensure salutation is one of the allowed ones.
             if(strncmp(current_word, "Mr", curr_word_len) == 0 ||
                 strncmp(current_word, "Mrs", curr_word_len) == 0 ||
                 strncmp(current_word, "Ms", curr_word_len) == 0 ||
@@ -462,9 +591,9 @@ int store_word(char* current_word, int curr_word_len, employee* emp, int num_mat
                 printf("Invalid Salutation on line %d: \n", num_read);
                 return EXIT_FAILURE;
             }
-
             break;
         case 2:
+            // These are any string so just set them.
             strncpy(emp->firstname, current_word, curr_word_len + 1);
             break;
         case 3:
@@ -474,6 +603,7 @@ int store_word(char* current_word, int curr_word_len, employee* emp, int num_mat
             strncpy(emp->position, current_word, curr_word_len + 1);
             break;
         case 5:
+            // Ensure salary is a non-negative integer.
             if(sscanf(current_word, "%d", &(emp->salary)) != 1 || emp->salary <= 0)
             {
                 printf("Invalid Salary on line %d: \n", num_read);
@@ -481,6 +611,7 @@ int store_word(char* current_word, int curr_word_len, employee* emp, int num_mat
             }
             break;
         case 6:
+            // Ensure deleted is 1 or 0.
             if(sscanf(current_word, "%d", &(emp->deleted)) != 1)
             {
                 printf("Invalid Deleted on line %d: \n", num_read);
@@ -496,28 +627,34 @@ int store_word(char* current_word, int curr_word_len, employee* emp, int num_mat
     return EXIT_SUCCESS;
 }
 
+/**
+ * Asks the user for yes or no, and returns 1 or 0.
+ * Has a max of 5 tries before defaulting to no.
+ */
 int confirm_with_user(char* msg)
 {
+    // Print the message.
     printf("%s [y/N]\n>>> ", msg);
     char *verdict = (char*)malloc(2 * sizeof(char)); 
-    //leak 2. If max tries is reached verdict isn't freed
 
     int max_tries = 5;
     int count = 0;
 
+    // Keep getting user input until max tries is reached.
     while(read_string_stdin(verdict, 2) != EXIT_SUCCESS || (strncmp(verdict, "y", 1) != 0 && strncmp(verdict, "n", 1) != 0))
     {
         count++;
 
         if(count >= max_tries)
         {   
-            printf("Max tried exceeded.\n");
+            printf("Max tries exceeded.\n");
             return 0;
         }
 
         printf("Please enter y or n.\n>>> ");
     }
 
+    // Check for "y".
     if(count < max_tries && (strncmp("y", verdict, 1) == 0))
     {
         free(verdict);
@@ -531,22 +668,18 @@ int confirm_with_user(char* msg)
 
 /**
  * Very secure authentication for security.
- * Passwords are limmited to 8 characters.
+ * Passwords are limmited to 8 characters for compatability.
  */
 int authenticate_user(void)
 {
-    char unhackable[9] = "password";
     char password[9];
 
     printf("Enter password:\n>>> ");
-    // Stack smash 1: This is a stack based buffer overflow resulting in code exec/crash.
-    // can also bypass password auth.
     scanf("%s", password);
 
-    /* We only need to compare 8 characters as that's the password
-     * length limit.
-     */
-    if(strncmp(password, unhackable, 8) == 0)
+    // We only need to compare 8 characters as that's the password
+    // length limit.
+    if(strncmp(password, vault->pass, 8) == 0)
     {
         return 1;
     }
@@ -554,12 +687,17 @@ int authenticate_user(void)
     return 0;
 }
 
+/**
+ * Reads a csv file and parses each line safely.
+ * calls store_word on each word it finds.
+ */
 int read_csv(char* filename, employee* emp)
 {
     char temp_line[128] = {0};
     int num_read = 0;
     int curr_word_len = 0;
 
+    // Open file.
     FILE* csv_file = fopen(filename, "r");
 
     if(csv_file == NULL)
@@ -568,12 +706,14 @@ int read_csv(char* filename, employee* emp)
         return EXIT_FAILURE;
     }
 
+    // Read line by line, up to 1000 times.
     while(fgets(temp_line, 128, csv_file) != NULL && num_read < 1000)
     {
         int num_matched;
         int idx = 0;
         char* current_word;
 
+        // Match the 7 fields.
         for(num_matched = 0; num_matched < 7; num_matched++)
         {
             int i = 0;
@@ -624,7 +764,6 @@ int read_csv(char* filename, employee* emp)
                 
         num_read++;
     }
-
 
     fclose(csv_file);
     return EXIT_SUCCESS;

@@ -1,5 +1,8 @@
 #pragma once
 
+/**
+ * Holds all the information for an employee.
+ */
 typedef struct employee
 {
 	int id;
