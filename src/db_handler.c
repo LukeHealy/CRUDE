@@ -8,6 +8,7 @@
 employee *backup_list;
 
 int changes;
+int db_loaded;
 
 int load_db(employee emp[1000])
 {
@@ -32,6 +33,7 @@ int load_db(employee emp[1000])
     
     memcpy(backup_list, emp, sizeof(employee) * 1000);
     changes = 0;
+    db_loaded = 1;
 
     free(filename);
 
@@ -44,6 +46,7 @@ int unload_database(employee emp[1000])
     {
         memset(emp, 0, sizeof(employee) * 1000);
         changes = 0;
+        db_loaded = 0;
     }
     // Get rid of old backup, no longer needed.
     // Double free crash: here when db is loaded then unloaded twice.
@@ -54,19 +57,29 @@ int unload_database(employee emp[1000])
 
 int discard_changes(employee emp[1000])
 {
-    if(changes)
+    char discard[2];
+    int num_emp = get_num_employees(emp);
+
+    if(changes && db_loaded)
     {
-        if(confirm_with_user("Are you sure you want to discard changes?"))
+        printf("Are you sure you want to discard changes?\n>>> ");
+        // stack overflow here
+        scanf("%4s", discard);
+
+        if(strncmp(discard, "yes", 1) == 0)
         {
-            memcpy(emp, backup_list, sizeof(employee) * 1000);
             changes = 0;
+            memcpy(emp, backup_list, sizeof(employee) * num_emp);
+        }
+        else
+        {
+            printf("Changes not discarded.\n");
         }
     }
     else
     {
         printf("No changes to discard.\n");
     }
-
     return EXIT_SUCCESS;
 }
 
@@ -245,7 +258,6 @@ int save_db(employee emp[1000])
 {
     /*Leak 1. This leaks when write_db_to_file fails. */
     save_data* sd = (save_data*)malloc(sizeof(save_data));
-    //sd->file_path = (char*)malloc(16);
 
     int choice = 0;
 
