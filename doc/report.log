@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.8.29)  15 OCT 2017 21:23
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.8.29)  16 OCT 2017 11:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -296,23 +296,55 @@ LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 ))
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/courier.sty
 Package: courier 2005/04/12 PSNFSS-v9.2a (WaS) 
-) (./report.aux)
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/listings/listings.sty
+\lst@mode=\count113
+\lst@gtempboxa=\box30
+\lst@token=\toks21
+\lst@length=\count114
+\lst@currlwidth=\dimen121
+\lst@column=\count115
+\lst@pos=\count116
+\lst@lostspace=\dimen122
+\lst@width=\dimen123
+\lst@newlines=\count117
+\lst@lineno=\count118
+\lst@maxwidth=\dimen124
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
+\c@lstnumber=\count119
+\lst@skipnumbers=\count120
+\lst@framebox=\box31
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2015/06/04 1.6 listings configuration
+))
+Package: listings 2015/06/04 1.6 (Carsten Heinz)
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
+)
+(./report.aux)
 \openout1 = `report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -350,17 +382,17 @@ LaTeX Font Info:    ... okay on input line 38.
 
 (/usr/local/texlive/2016/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count113
-\scratchdimen=\dimen121
-\scratchbox=\box30
-\nofMPsegments=\count114
-\nofMParguments=\count115
-\everyMPshowfont=\toks21
-\MPscratchCnt=\count116
-\MPscratchDim=\dimen122
-\MPnumerator=\count117
-\makeMPintoPDFobject=\count118
-\everyMPtoPDFconversion=\toks22
+\scratchcounter=\count121
+\scratchdimen=\dimen125
+\scratchbox=\box32
+\nofMPsegments=\count122
+\nofMParguments=\count123
+\everyMPshowfont=\toks22
+\MPscratchCnt=\count124
+\MPscratchDim=\dimen126
+\MPnumerator=\count125
+\makeMPintoPDFobject=\count126
+\everyMPtoPDFconversion=\toks23
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
@@ -376,8 +408,8 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\AtBeginShipoutBox=\box31
-Package hyperref Info: Link coloring OFF on input line 38.
+\AtBeginShipoutBox=\box33
+Package hyperref Info: Link coloring OFF on input line 56.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
@@ -385,11 +417,11 @@ Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 (/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count119
+\c@section@level=\count127
 )
-LaTeX Info: Redefining \ref on input line 38.
-LaTeX Info: Redefining \pageref on input line 38.
-LaTeX Info: Redefining \nameref on input line 38.
+LaTeX Info: Redefining \ref on input line 56.
+LaTeX Info: Redefining \pageref on input line 56.
+LaTeX Info: Redefining \nameref on input line 56.
 
 (./report.out) (./report.out)
 \@outlinefile=\write3
@@ -404,15 +436,17 @@ Package: lscape 2000/10/22 v3.01 Landscape Pages (DPC)
 )
 Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 )
+\c@lstlisting=\count128
+
 <assignment-cover-sheet1.pdf, id=4, 597.23125pt x 845.1575pt>
 File: assignment-cover-sheet1.pdf Graphic file (type pdf)
 
 <use assignment-cover-sheet1.pdf>
-Package pdftex.def Info: assignment-cover-sheet1.pdf used on input line 43.
+Package pdftex.def Info: assignment-cover-sheet1.pdf used on input line 61.
 (pdftex.def)             Requested size: 597.22978pt x 845.15544pt.
 File: assignment-cover-sheet1.pdf Graphic file (type pdf)
  <use assignment-cover-sheet1.pdf>
-Package pdftex.def Info: assignment-cover-sheet1.pdf used on input line 43.
+Package pdftex.def Info: assignment-cover-sheet1.pdf used on input line 61.
 (pdftex.def)             Requested size: 597.22978pt x 845.15544pt.
 
 <assignment-cover-sheet1.pdf, id=7, page=1, 597.23125pt x 845.1575pt>
@@ -420,31 +454,31 @@ File: assignment-cover-sheet1.pdf Graphic file (type pdf)
 
 <use assignment-cover-sheet1.pdf, page 1>
 Package pdftex.def Info: assignment-cover-sheet1.pdf, page1 used on input line 
-43.
+61.
 (pdftex.def)             Requested size: 597.22978pt x 845.15544pt.
 File: assignment-cover-sheet1.pdf Graphic file (type pdf)
 
 <use assignment-cover-sheet1.pdf, page 1>
 Package pdftex.def Info: assignment-cover-sheet1.pdf, page1 used on input line 
-43.
+61.
 (pdftex.def)             Requested size: 561.86221pt x 795.10587pt.
 File: assignment-cover-sheet1.pdf Graphic file (type pdf)
 
 <use assignment-cover-sheet1.pdf, page 1>
 Package pdftex.def Info: assignment-cover-sheet1.pdf, page1 used on input line 
-43.
+61.
 (pdftex.def)             Requested size: 561.86221pt x 795.10587pt.
 File: assignment-cover-sheet1.pdf Graphic file (type pdf)
 
 <use assignment-cover-sheet1.pdf, page 1>
 Package pdftex.def Info: assignment-cover-sheet1.pdf, page1 used on input line 
-43.
+61.
 (pdftex.def)             Requested size: 561.86221pt x 795.10587pt.
 File: assignment-cover-sheet1.pdf Graphic file (type pdf)
 
 <use assignment-cover-sheet1.pdf, page 1>
 Package pdftex.def Info: assignment-cover-sheet1.pdf, page1 used on input line 
-43.
+61.
 (pdftex.def)             Requested size: 561.86221pt x 795.10587pt.
  [1
 
@@ -452,82 +486,121 @@ Package pdftex.def Info: assignment-cover-sheet1.pdf, page1 used on input line
 me identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.65 \end{titlepage}
+l.83 \end{titlepage}
                      [1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updm
 ap/pdftex.map}]pdfTeX warning (ext4): destination with the same identifier (nam
 e{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.100 
+l.118 
        [1]
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 108.
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 126.
 
  (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
-LaTeX Font Info:    Try loading font information for U+msa on input line 135.
+LaTeX Font Info:    Try loading font information for U+msa on input line 143.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 135.
+LaTeX Font Info:    Try loading font information for U+msb on input line 143.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Underfull \hbox (badness 10000) in paragraph at lines 120--136
+Underfull \hbox (badness 10000) in paragraph at lines 148--166
 
  []
 
 
-Overfull \hbox (0.42152pt too wide) in paragraph at lines 120--136
+Overfull \hbox (0.42152pt too wide) in paragraph at lines 148--166
 \OT1/pcr/m/n/10 Employee 1718051187:hjasgdhjfgsadjgfhjasghfgashjkfgjhkasdgfhjga
 sdjfhkgksda 
  []
 
 
-Overfull \hbox (0.42152pt too wide) in paragraph at lines 120--136
+Overfull \hbox (0.42152pt too wide) in paragraph at lines 148--166
 \OT1/pcr/m/n/10 hfgsadhjkgfhjksadgfhjkagdshfgjhaksdgfjagsdhjfgasdhjgfjagsdhjfga
 dsjkgdhjfgs 
  []
 
 
-Overfull \hbox (0.42152pt too wide) in paragraph at lines 120--136
+Overfull \hbox (0.42152pt too wide) in paragraph at lines 148--166
 \OT1/pcr/m/n/10 adjgfhjasghfgashjkfgjhkasdgfjgasdjfhkgksdahfgsadhjkgfhjksadgfhj
 kagdshfgjha 
  []
 
 
-Overfull \hbox (0.42152pt too wide) in paragraph at lines 120--136
+Overfull \hbox (0.42152pt too wide) in paragraph at lines 148--166
 \OT1/pcr/m/n/10 ksdgfjagsdhjfgasdhjgfjagsdhjfgadsjkshjkfgjhkasdgfhjgasdjfhkgksd
 ahfgsadhjkg 
  []
 
 
-Overfull \hbox (0.42152pt too wide) in paragraph at lines 120--136
+Overfull \hbox (0.42152pt too wide) in paragraph at lines 148--166
 \OT1/pcr/m/n/10 fhjksadgfhjkagdshfgjhaksdgfjagsdhjfgasdhjgfjagsdhjfgadsjk, gsad
 hjkgfhjksad 
  []
 
 
-Overfull \hbox (0.42152pt too wide) in paragraph at lines 120--136
+Overfull \hbox (0.42152pt too wide) in paragraph at lines 148--166
 \OT1/pcr/m/n/10 gfhjkagdshfgjhaksdgfjagsdhjfgasdhjgfjagsdhjfgadsjk. Salary: $18
 02135654. 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 120--136
+Underfull \hbox (badness 10000) in paragraph at lines 148--166
 
  []
 
 [2]
-LaTeX Font Info:    Try loading font information for OMS+pcr on input line 141.
+LaTeX Font Info:    Try loading font information for OMS+pcr on input line 173.
 
  (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omspcr.fd
 File: omspcr.fd 
 )
 LaTeX Font Info:    Font shape `OMS/pcr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 141.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 173.
+ [3]
+Underfull \hbox (badness 10000) in paragraph at lines 193--198
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 193--198
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 200--209
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 200--209
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 209--216
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 209--216
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 209--216
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 218--222
+
+ []
 
 
 ! LaTeX Error: There's no line here to end.
@@ -536,60 +609,19 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.152 F
-       or this exercise, we will append the shellcode to the payload string....
-
+l.224 	T
+        o fix this issue, simply bounds check the vulnerable scanf statement.
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-[3]
-Underfull \hbox (badness 10000) in paragraph at lines 160--165
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 160--165
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 167--176
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 167--176
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 176--183
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 176--183
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 176--183
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 185--189
-
- []
-
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 207--212
+Underfull \hbox (badness 10000) in paragraph at lines 242--247
 
  []
 
 
-Overfull \hbox (5.42168pt too wide) in paragraph at lines 207--212
+Overfull \hbox (5.42168pt too wide) in paragraph at lines 242--247
 \OT1/pcr/m/n/10 python -c "print '1\OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 ntest.csv\
 OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 n5\OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 n1\OMS/cms
 y/m/n/10 n\OT1/pcr/m/n/10 n' + []17 * 'a'[] + []'\OMS/cmsy/m/n/10 n\OT1/pcr/m/n
@@ -598,7 +630,7 @@ ff\OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 xbf'[] +
  []
 
 
-Overfull \hbox (7.42183pt too wide) in paragraph at lines 207--212
+Overfull \hbox (7.42183pt too wide) in paragraph at lines 242--247
 \OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 x6e\OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 x89\OMS/
 cmsy/m/n/10 n\OT1/pcr/m/n/10 xe3\OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 x50\OMS/cmsy/
 m/n/10 n\OT1/pcr/m/n/10 x53\OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 x89\OMS/cmsy/m/n/1
@@ -611,40 +643,54 @@ S/cmsy/m/n/10 n\OT1/pcr/m/n/10 x0a'"[]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 207--212
+Underfull \hbox (badness 10000) in paragraph at lines 242--247
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 207--212
+Underfull \hbox (badness 10000) in paragraph at lines 242--247
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 212--218
+Underfull \hbox (badness 10000) in paragraph at lines 247--253
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 212--218
+Underfull \hbox (badness 10000) in paragraph at lines 247--253
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 223--224
+! LaTeX Error: There's no line here to end.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.255 T
+       o fix this problem, implementing ASLR will make the attack much harde...
+
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+[5]
+Underfull \hbox (badness 10000) in paragraph at lines 261--262
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 225--226
+Underfull \hbox (badness 10000) in paragraph at lines 263--264
 
  []
 
 ! Undefined control sequence.
 <argument> ...esspipe \%s"\\ 0xbfffff9f: "CODE=1\3
                                                   00Ph//shh/bin\211\343PS\21...
-l.236 	 	0xbffffffd:	 ""\\}
-                           
+l.275 	 	...}
+             
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -654,8 +700,8 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <argument> ...0xbfffff9f: "CODE=1\300Ph//shh/bin\2
                                                   11\343PS\211\341\061҃\300...
-l.236 	 	0xbffffffd:	 ""\\}
-                           
+l.275 	 	...}
+             
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -665,8 +711,8 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <argument> ...ffff9f: "CODE=1\300Ph//shh/bin\211\3
                                                   43PS\211\341\061҃\300[\20...
-l.236 	 	0xbffffffd:	 ""\\}
-                           
+l.275 	 	...}
+             
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -676,8 +722,8 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <argument> ...: "CODE=1\300Ph//shh/bin\211\343PS\2
                                                   11\341\061҃\300[\203\350P...
-l.236 	 	0xbffffffd:	 ""\\}
-                           
+l.275 	 	...}
+             
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -687,8 +733,8 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <argument> ...ODE=1\300Ph//shh/bin\211\343PS\211\3
                                                   41\061҃\300[\203\350P̀"\...
-l.236 	 	0xbffffffd:	 ""\\}
-                           
+l.275 	 	...}
+             
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -698,8 +744,8 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <argument> ...1\300Ph//shh/bin\211\343PS\211\341\0
                                                   61҃\300[\203\350P̀"\\ 0x...
-l.236 	 	0xbffffffd:	 ""\\}
-                           
+l.275 	 	...}
+             
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -711,8 +757,8 @@ Missing character: There is no � in font pcrr7t!
 ! Undefined control sequence.
 <argument> ...h//shh/bin\211\343PS\211\341\061҃\3
                                                   00[\203\350P̀"\\ 0xbfffff...
-l.236 	 	0xbffffffd:	 ""\\}
-                           
+l.275 	 	...}
+             
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -722,8 +768,8 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <argument> ...h/bin\211\343PS\211\341\061҃\300[\2
                                                   03\350P̀"\\ 0xbfffffc2: "...
-l.236 	 	0xbffffffd:	 ""\\}
-                           
+l.275 	 	...}
+             
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -733,8 +779,8 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <argument> ...n\211\343PS\211\341\061҃\300[\203\3
                                                   50P̀"\\ 0xbfffffc2: "LESS...
-l.236 	 	0xbffffffd:	 ""\\}
-                           
+l.275 	 	...}
+             
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -744,27 +790,22 @@ and I'll forget about whatever was undefined.
 Missing character: There is no � in font pcrr7t!
 Missing character: There is no � in font pcrr7t!
 
-Underfull \hbox (badness 10000) in paragraph at lines 227--238
+Underfull \hbox (badness 10000) in paragraph at lines 265--277
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 227--238
+Underfull \hbox (badness 10000) in paragraph at lines 265--277
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 227--238
-
- []
-
-[5]
-Underfull \hbox (badness 10000) in paragraph at lines 238--243
+Underfull \hbox (badness 10000) in paragraph at lines 277--282
 
  []
 
 
-Overfull \hbox (5.42168pt too wide) in paragraph at lines 238--243
+Overfull \hbox (5.42168pt too wide) in paragraph at lines 277--282
 \OT1/pcr/m/n/10 python -c "print '1\OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 ntest.csv\
 OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 n5\OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 n1\OMS/cms
 y/m/n/10 n\OT1/pcr/m/n/10 n' + []17 * 'a'[] + []'\OMS/cmsy/m/n/10 n\OT1/pcr/m/n
@@ -773,27 +814,27 @@ ff\OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 xbf'[] +
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 238--243
+Underfull \hbox (badness 10000) in paragraph at lines 277--282
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 243--248
+Underfull \hbox (badness 10000) in paragraph at lines 282--289
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 243--248
+Underfull \hbox (badness 10000) in paragraph at lines 282--289
+
+ []
+
+[6]
+Underfull \hbox (badness 10000) in paragraph at lines 295--300
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 254--259
-
- []
-
-
-Overfull \hbox (5.42168pt too wide) in paragraph at lines 254--259
+Overfull \hbox (5.42168pt too wide) in paragraph at lines 295--300
 \OT1/pcr/m/n/10 python -c "print '1\OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 ntest.csv\
 OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 n5\OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 n1\OMS/cms
 y/m/n/10 n\OT1/pcr/m/n/10 n' + []21 * 'a'[] + '[]\OMS/cmsy/m/n/10 n\OT1/pcr/m/n
@@ -802,81 +843,123 @@ e6\OMS/cmsy/m/n/10 n\OT1/pcr/m/n/10 xb7[]' +
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 254--259
+Underfull \hbox (badness 10000) in paragraph at lines 295--300
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 259--270
+Underfull \hbox (badness 10000) in paragraph at lines 300--311
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 259--270
+Underfull \hbox (badness 10000) in paragraph at lines 300--311
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 259--270
+Underfull \hbox (badness 10000) in paragraph at lines 300--311
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 259--270
-
- []
-
-[6]
-Underfull \hbox (badness 10000) in paragraph at lines 270--275
+Underfull \hbox (badness 10000) in paragraph at lines 300--311
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 270--275
+Underfull \hbox (badness 10000) in paragraph at lines 311--316
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 275--281
+Underfull \hbox (badness 10000) in paragraph at lines 311--316
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 275--281
+Underfull \hbox (badness 10000) in paragraph at lines 316--324
 
  []
 
-[7] [8]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 300.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 300.
+
+Underfull \hbox (badness 10000) in paragraph at lines 316--324
+
+ []
+
+[7]
+Underfull \hbox (badness 10000) in paragraph at lines 339--348
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 339--348
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 339--348
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 339--348
+
+ []
+
+[8] (../src/Makefile) (../Makefile) [9] (../src/main.h) (../src/main.c
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 1.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/omlcmr.fd
+File: omlcmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <8> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 1.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 11.
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <8> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 11.
+ [10]) [11]
+(../src/io.h) (../src/io.c [12]) [13] (../src/db_handler.h)
+(../src/db_handler.c [14] [15] [16] [17] [18] [19] [20] [21] [22] [23] [24]
+[25]) [26]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 377.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 377.
  (./report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 300.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 300.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 377.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 377.
 Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 300.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 377.
  ) 
 Here is how much of TeX's memory you used:
- 7743 strings out of 493014
- 113029 string characters out of 6133351
- 213172 words of memory out of 5000000
- 11113 multiletter control sequences out of 15000+600000
- 8324 words of font info for 32 fonts, out of 8000000 for 9000
+ 10412 strings out of 493014
+ 152218 string characters out of 6133351
+ 395708 words of memory out of 5000000
+ 12722 multiletter control sequences out of 15000+600000
+ 11424 words of font info for 44 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 37i,18n,43p,1150b,450s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 37i,18n,49p,1150b,1717s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/te
 xlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/tex
 live/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texl
-ive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texliv
-e/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/
-2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2
-016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/20
-16/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb>
-Output written on report.pdf (10 pages, 179672 bytes).
+ive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texliv
+e/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/
+2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/20
+16/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2016/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2016/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2016/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2016/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2016/texmf-d
+ist/fonts/type1/urw/courier/ucrr8a.pfb>
+Output written on report.pdf (28 pages, 311859 bytes).
 PDF statistics:
- 196 PDF objects out of 1000 (max. 8388607)
- 163 compressed objects within 2 object streams
- 72 named destinations out of 1000 (max. 500000)
+ 1488 PDF objects out of 1728 (max. 8388607)
+ 1420 compressed objects within 15 object streams
+ 1077 named destinations out of 1200 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)
 

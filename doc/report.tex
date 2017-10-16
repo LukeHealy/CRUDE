@@ -20,6 +20,24 @@
 \usepackage{amssymb}
 \usepackage{courier}
 \usepackage{color}
+\usepackage{listings}
+
+\lstset
+{ %Formatting for code in appendix
+	language=C,
+	title=\lstname,
+	commentstyle=\color{gray},
+	basicstyle=\footnotesize,
+	numbers=left,
+	keywordstyle=\color{blue},
+	numberstyle=\tiny\color{gray},
+	stringstyle=\color{orange},
+	stepnumber=1,
+	showstringspaces=false,
+	tabsize=1,
+	breaklines=true,
+	breakatwhitespace=false,
+}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -106,23 +124,33 @@ There are a total of 10 vulnerabilities in the program. They are as hidden as po
 \subsection*{Memory leaks}
 \begin{enumerate}
 	\item In function \texttt{update\_employee} (\textbf{db\_handler.c:169}), the \texttt{backup} variable, a pointer to an \texttt{employee} is not freed if the \texttt{employee*} given to \texttt{update\_employee} is \texttt{NULL}. This is because the function checks for \texttt{NULL} and immediatly returns.
-	\item In function \texttt{save\_db} (\textbf{db\_handler.c:317}), the \texttt{sd} variable is not freed when the\\\texttt{write\_to\_file} function is not successful. The programmer freed it at the end of the function, but not in the branch of code which executes if writing to the file fails.
+	\\
+	In order to fix this, simply free \texttt{backup} in all branches of the code.
+	\item In function \texttt{save\_db} (\textbf{db\_handler.c:317}), the \texttt{sd} variable is not freed when the \texttt{write\_to\_file} function is not successful. The programmer freed it at the end of the function, but not in the branch of code which executes if writing to the file fails.
+	\\
+	In order to fix this, free \texttt{sd} before the function returns when \texttt{write\_to\_file}.
 	\item In function \texttt{confirm\_with\_user} (\textbf{db\_handler.c:634}), the \texttt{verdict} string is not freed if the user exceeds the maximum tries before the function defaults to return false. The programmer forgot to free the variable in that particular branch of execution.
+	\\
+	In order to fix this, free \texttt{verdict} before returning when the max tries is reached.
 \end{enumerate}
 
 \subsection*{Double free causing crash}
 In the function \texttt{unload\_database} (\textbf{db\_handler.c:60}), the \texttt{backup\_list} variable is freed as it is no longer needed, and will be reset when the next database is loaded. The problem is, the programmer didn't check to see if the next database had actually been loaded yet, meaning if a database is loaded, then unloaded \textit{twice}, the program will crash due to the double free. Although  double free causes "undefined" behaviour, in the testing done, a crash always occurs under the described conditions.
+\\
+To fix this issue, keep track of whether or not a database is loaded, and do not attempt to unload it if the check fails.
 
 \subsection*{Access after free}
-In function \texttt{change\_password}(\textbf{db\_handler.c:417}), the variable \texttt{vault} is freed, as it will be replaced by \texttt{new\_vault}. \texttt{new\_vault} is allocated memory right after the free. The program then prints the old password, and the new one to the user to show the change. Printing \texttt{vault->password}, will print the \textit{new} password, not the old one, as the memory previously just freed is given to \texttt{new\_vault}. This behaviour does not occur when the program is run under valgrind, explaining why the programmer didn't reaslise.
+In function \texttt{change\_password}(\textbf{db\_handler.c:417}), the variable \texttt{vault} is freed, as it will be replaced by \texttt{new\_vault}. \texttt{new\_vault} is allocated memory right after the free. The program then prints the old password, and the new one to the user to show the change. Printing \texttt{vault-$>$password}, will print the \textit{new} password, not the old one, as the memory previously just freed is given to \texttt{new\_vault}. This behaviour does not occur when the program is run under valgrind, explaining why the programmer didn't reaslise.
+\\
+Simply allocating the memory for \texttt{new\_vault} before freeing vault will fix the problem.
 
 \subsection*{Heap based buffer overflow causing corruption but no crash}
 In function \texttt{update\_employee} (\textbf{db\_handler.c:169}), the programmer accidently gave the value of 150, instead of 15 for the number of characters to read for the \texttt{position} field in \texttt{employee}.
 Writing more than 15 characters to this buffer will corrupt the next employee in the array. If there is no employee in the next index, the id will still be set to a very large number, scewing any newly generated ID.
 If an employee \textit{does} exist in the next index, it will be entirely overwritten with enough input, looking 
-something like this:
+something like this:\\
 \\
-\\
+\pagebreak
  \texttt{Employee 1718051187:hjasgdhjfgsadjgfhjasghfgashjkfgjhkasdgfhjgasdjfhkgksda\\
  	hfgsadhjkgfhjksadgfhjkagdshfgjhaksdgfjagsdhjfgasdhjgfjagsdhjfgadsjkgdhjfgs\\
  	adjgfhjasghfgashjkfgjhkasdgfjgasdjfhkgksdahfgsadhjkgfhjksadgfhjkagdshfgjha\\
@@ -133,12 +161,18 @@ something like this:
  \\
  \\
 Doing this will not cause the program to crash. The input while too much, is limited to 150 characters, meaning that the data can only go $(150 - 15 - sizeof(int) - sizeof(int))$ bytes past the array. As the array is malloc'd first, it is at the start of the heap. While this may differ on some systems, the two in which I tested the code on acted as described. 
+\\
+Careful code inspection should reveal this error. They simply need to remove the 0, setting the number of characters read to only 15.
 
 \subsection*{Heap based buffer overflow causing crash}
 In the function \texttt{exit\_program} (\textbf{db\_handler.c:478}), a string is read from the user and stored in the variable \texttt{quit}. The string is assigned a value in the following fashion: \texttt{scanf("\%s", quit);}. This is clearly vulnerable as it does not check the bounds of the input. The variable is then compared to the string literal \texttt{"quit"} like so: \texttt{strncmp(quit, "quit", 4);}. This means that if more than just "quit" is written to the buffer, you usually won't notice. You must write a huge amount of data to the \texttt{quit} buffer in order to crash the program, as you need to traverse the entire heap and breach the programs segment. If you don't write enough to crash immediatly, there is a high chance that other data on the heap will become corrupt, likely causing a crash later.
+\\
+To fix this, bounds check the scanf statement to only read 4 characters. Also allocate soace for 5 characters to accomodate the null byte.
 
 \subsection*{Stack based buffer overflow causing crash}
 In the function \texttt{discard\_changes} (\textbf{db\_handler.c:78}), the string \texttt{discard} is used to store the users decision as to whether or not they want to discard changes to the database. There is some confusion in the code because \texttt{discard} has space for 2 characters, e.g \texttt{\{'y','\textbackslash0'\}}, but the programmer reads in 4 characters, e.g \texttt{\{'y','e','s','\textbackslash0'\}}. They then compare just the first character to \texttt{"yes"} like so: \texttt{strncmp("yes", discard, 1)}. This works fine if the user enters either "y" or "yes". The reason this can cause a crash is because on the stack, right after \texttt{discard} is the index variable \texttt{num\_emp} which is used in \texttt{memcpy} as the buffer size a few lines later. If you write 4 characters to \texttt{discard}, of high enough ascii value, you will overwrite the \texttt{num\_emp} variable with a high value, (greater than 999, the size of the employee array), which will then cause \texttt{memcpy} to crash when it tries to write way further than it should.
+\\
+To fix this, either ask for 'y', or 'yes' and make the rest of the function consistent with that. Ensure that there is the right amount of space allocated to match the amount read in.
 
 \subsection*{Heap based buffer overflow causing arbitrary code execution}
 In function \texttt{save\_db}, the struct \texttt{sd} contains information regarding the behaviour of \texttt{save\_db}. This includes a \texttt{file\_path}, and a function pointer \texttt{func}, which points to either the \texttt{write\_to\_file} or \texttt{write\_to\_screen} function. The scanf statement which reads the \texttt{file\_path} from the user is not bounds checked. This means that we can overrun the buffer for the \texttt{file\_path}, and overwrite the function pointer to point to our own shellcode.
@@ -148,8 +182,7 @@ There are three very good options here:
 	\item One can store the payload in an environment variable on the stack, and jump to it. Finding this address is very easy, you simply print the stack out and look for the string.
 	\item One can find the address of the \texttt{system} function in \texttt{libc}, and jump to it. The only tricky part here is that because we're not on the stack, specifying arguments for \texttt{libc} (i.e "\texttt{/bin/sh}") can be difficult. It seems to default to the second address on the heap, who knows why?
 \end{enumerate} 
- \\
-For this exercise, we will append the shellcode to the payload string. These are the steps that were taken.
+ For this exercise, we will append the shellcode to the payload string. These are the steps that were taken.
 
 \begin{enumerate}
 	\item Run crude through gdb with a break at \texttt{save\_db}. Run through the program until it hits the save\_db breakpoint.
@@ -186,8 +219,10 @@ For this exercise, we will append the shellcode to the payload string. These are
 	\\
 	\\
 	Success!
-	
 \end{enumerate}
+	\\
+	To fix this issue, simply bounds check the vulnerable scanf statement.
+
 \subsection*{Stack based buffer overflow causing arbitrary code execution}
 In the function \texttt{authenticate\_user}(\textbf{db\_handler.c:673}), the string password has a buffer size of only 9 characters. This is because password are limited to 8 characters on this system. The scanf statement which reads data from the user and stores it in password is not bounds checked. As password is on the stack, this will be the classic stack smash. The vulnerability was exploited successfully in 3 ways.
 \begin{enumerate}
@@ -216,6 +251,9 @@ This exploit is fairly straight forward. It is similar to the heap based exploit
 	\\\\
 	Success!
 \end{enumerate}
+\\
+To fix this problem, implementing ASLR will make the attack much harder to carry out. DEP will also prevent the code from being executed. The programmer should also bounds check the vulnerable scanf statement to prevent any buffer overflows.
+
 \subsubsection*{Payload in environment variable}
 This one is very similar to the previous, only instead of jumping just past the return address to the shellcode, we jump up to the top of the stack to an environment variable.
 
@@ -227,13 +265,14 @@ This one is very similar to the previous, only instead of jumping just past the 
 	This will put the shellcode in a variable called CODE. In order to find the address required, one can simply print the stack in gdb like so: \texttt{x/500s \$esp}. If you put a break point in main, you will definitely get the environment to print in the first 500 words. It looks something like this.
 	\\
 	\\
-	 \texttt{
+	 \texttt{...\\
 	 	0xbfffff7f:	 "LESSOPEN=| /usr/bin/lesspipe \%s"\\
 	 	0xbfffff9f:	 "CODE=1\300Ph//shh/bin\211\343PS\211\341\061҃\300[\203\350P̀"\\
 	 	0xbfffffc2:	 "LESSCLOSE=/usr/bin/lesspipe \%s \%s"\\
 	 	0xbfffffe4:	 "/home/ccsep/CRUDE/crude"\\
 	 	0xbffffffc:	 ""\\
-	 	0xbffffffd:	 ""\\}
+	 	0xbffffffd:	 ""\\
+	 	...}
 	\\
 	\item We then need to add enough to the address printed, in order to skip the name and "=" sign. In this case we add 5 to 0xbfffff9f, giving 0xbfffffa4.\\
 	Once we have the required addresses, we can construct the exploit string like so: Program interaction input, \textcolor{blue}{buffer overflow}, \textcolor{red}{PSFP}, \textcolor{orange}{new return address}.\\
@@ -245,6 +284,8 @@ This one is very similar to the previous, only instead of jumping just past the 
 	LICENSE  Makefile  README.md  crude  doc  resources  sin  src  test.csv}
 	\\\\
 	Success again!
+	\\
+	Like the previous part, DEP and a bounds checked scanf will fix the problem.
 \end{enumerate}
 \subsubsection*{Return to libc}
 The third technique is useful because it can bypass the Data Execution Prevention (DEP) feature of modern systems. The aim here is to use libc to fork a new process that we define. The steps to do so are as follows:
@@ -278,16 +319,52 @@ We can leverage the fact that we are able to specify the return address of \text
 \\
 \\
 Success!
-
+\\
+DEP will not help us in this situation, but bounds checking the input will fix the problem.
 \end{enumerate}
 
 \subsection*{The shellcode}
 The shellcode used in these demo's is all the same piece. It is from practical 5 and simply calls \texttt{execve}, passing it "/bin/sh".
 
+\subsection*{The system used for testing}
+The system that was used for testing this assignment is a 32 bit Ubuntu Server 12.04 Virtual Machine, running under Oracle Virtualbox. It's running Linux Kernel 3.2.0-23-generic-pae. The following programs were installed:
+
+\begin{enumerate}
+	\item gcc
+	\item valgrind
+	\item gdb
+	\item openssh-server
+	\item htop
+\end{enumerate}
+Other than the listed programs, the install was completely fresh. \\
+\\
+In order to make the simple stack and heap based exploits possible, there was a small amount of configuration required. Address Space Layout Randomization (ASLR) was disabled using the following command:\\
+\\
+ \texttt{echo 0 $>$ /proc/sys/kernel/randomize\_va\_space}\\
+ \\
+ In addition to this, two options were required to be enabled in the compiler and linker. They disable DEP and canaries. The following is an excerpt from the main Makefile, showing these options.\\
+ \\
+ \texttt{VULN = -fno-stack-protector -z execstack}
+
+\subsection*{Problems and bugs}
+According to the testing done, the program has no bugs or problems, other than the ones intentionally added.
+
 \pagebreak
 \begin{center}
 	\section*{Appendix 1}
 \end{center}
+\subsection*{Source code}
+\lstinputlisting{../src/Makefile}
+\lstinputlisting{../Makefile}
+\pagebreak
+\lstinputlisting{../src/main.h}
+\lstinputlisting{../src/main.c}
+\pagebreak
+\lstinputlisting{../src/io.h}
+\lstinputlisting{../src/io.c}
+\pagebreak
+\lstinputlisting{../src/db_handler.h}
+\lstinputlisting{../src/db_handler.c}
 
 %-------------------------------------------------------------------------------   
 % REFERENCES
